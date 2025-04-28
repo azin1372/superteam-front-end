@@ -3,7 +3,7 @@ import cn from "classnames";
 
 const ResultLanding = () => {
 	return (
-		<div className="page-container mt-8">
+		<div className="page-container !mt-[150px]">
 			<User
 				className="mb-5"
 				avatarProps={{
