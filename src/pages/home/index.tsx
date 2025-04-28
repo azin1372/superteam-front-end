@@ -1,12 +1,12 @@
 import DefaultLayout from "@/layouts/default";
-import LandingHero from "./hero";
 import ResultLanding from "./result";
 
 export default function IndexPage() {
+
 	return (
 		<DefaultLayout>
 			<section className="top-hero-section">
-				<LandingHero />
+	
 				<ResultLanding />
 
 				{/* <div className="flex gap-3">
