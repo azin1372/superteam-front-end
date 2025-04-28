@@ -5,7 +5,7 @@ const ResultLanding = () => {
 	return (
 		<div className="page-container mt-8">
 			<User
-				className="mb-10"
+				className="mb-5"
 				avatarProps={{
 					src: "https://avatars.githubusercontent.com/u/30373425?v=4",
 				}}
@@ -17,16 +17,16 @@ const ResultLanding = () => {
 				name="Junior Garcia"
 			/>
 			<div className="grid grid-cols-12 gap-3 ">
-				<div className="col-span-3">
+				<div className="col-span-12 lg:col-span-5">
 					<div className="thread-card">
-						<h2 className="text-danger text-4xl font-bold">
+						<h2 className="text-danger text-3xl font-bold">
 							Malicious Address
 							<br /> (3 issues)
 						</h2>
 					</div>
 				</div>
 
-				<div className="col-span-9">
+				<div className="col-span-12 lg:col-span-7">
 					<Slider
 						classNames={{
 							base: "max-w-md gap-3",
