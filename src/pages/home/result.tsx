@@ -20,7 +20,7 @@ const ResultLanding = () => {
 
 	return (
 		<>
-			<div className="page-container mx-auto max-w-7xl px-1 sm:px-2 lg:px-4 xl:px-6 flex-grow pt-3 sm:pt-5 lg:pt-10 xl:pt-16 mt-2 lg:mt-10 xl:mt-14">
+			<div className="page-container mx-auto max-w-7xl px-1 sm:px-2 lg:px-4 xl:px-6 flex-grow pt-3 sm:pt-5 lg:pt-10 xl:pt-16 mt-2 lg:mt-10 xl:mt-14 top-hero-section">
 				<div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 ">
 					<div className="inline-block max-w-[1750px] text-center justify-center">
 						<h1 className={title()}>
@@ -51,7 +51,7 @@ const ResultLanding = () => {
 					</div>
 				</div>
 			</div>
-			<div className="page-container !mt-[150px]">
+			<div className="page-container !mt-[150px] top-hero-section">
 				<User
 					className="mb-5"
 					avatarProps={{

@@ -5,8 +5,8 @@ export default function IndexPage() {
 
 	return (
 		<DefaultLayout>
-			<section className="top-hero-section">
-	
+			<section className="">
+				{/* <img alt="pattern"    /> */}
 				<ResultLanding />
 
 				{/* <div className="flex gap-3">
