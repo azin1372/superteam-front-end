@@ -1,11 +1,10 @@
-import { Button, Chip, Divider, Input, Link, Slider, Tooltip, User } from "@heroui/react";
+import { Button, Chip, Divider, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Slider, Tooltip, User } from "@heroui/react";
 import { title, subtitle } from "@/components/primitives";
-import cn from "classnames";
 import { useResult } from "./hooks";
 import { useSearchParams } from "react-router-dom";
 import SliderComponent from "../../components/slider";
-import { GithubIcon } from "@/components/icons";
 import { BsDiscord, BsEnvelope, BsEnvelopeFill, BsGithub, BsLink, BsLinkedin } from "react-icons/bs";
+import { useUrl } from "@/hooks/useUrl";
 
 const formatNumber = (value: string | number, decimals = 2) => {
 	const numValue = typeof value === "string" ? parseFloat(value) : value;
@@ -25,118 +24,127 @@ const formatNumber = (value: string | number, decimals = 2) => {
 
 const ResultLanding = () => {
 	const [searchParams] = useSearchParams();
-	const { getThread, loading, contractAddress, setContractAddress, result, findTopic, bubble, tokenData } = useResult();
+	const { getThread, loading, contractAddress, setContractAddress, result, findTopic, bubble, tokenData, historyModal, onCloseHistoryModal, setHistoryModal, histories, changeContract } = useResult();
+	const { addToQuery } = useUrl();
 
 	console.log({ tokenData });
-	return (
-		<div className="mb-16">
-			<div className="page-container mx-auto max-w-7xl px-1 sm:px-2 lg:px-4 xl:px-6 flex-grow pt-3 sm:pt-5 lg:pt-10 xl:pt-16 mt-2 lg:mt-10 xl:mt-14 top-hero-section">
-				<div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 ">
-					<div className="inline-block max-w-[1750px] text-center justify-center">
-						<h1 className={title()}>
-							<div>DD.xyz Token Scanner &nbsp;</div>
-							<span> Your </span>
-							<span className={title({ color: "yellow" })}>Shield </span>
-							<span>Against Blockchain Risks. &nbsp;</span>
-						</h1>
-					</div>
 
-					<div className="">
-						<div className={subtitle({ class: "mt-6" })}>Paste any token or wallet address to uncover hidden risks with DD.xyz&apos;s powerful API.</div>
-					</div>
-					<div className="flex flex-wrap md:flex-nowrap items-center gap-2 max-w-[800px] w-full ">
-						<Input
-							onChange={(e) => setContractAddress(e.target.value)}
-							defaultValue={searchParams.get("contractAddress") || ""}
-							className="w-full"
-							label="Enter Contract Address"
-							type="text"
-							variant="faded"
-							fullWidth
-							size="lg"
-						/>
-						<Button isLoading={loading} onPress={() => getThread(contractAddress)} type="button" color="warning" size="lg" className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto">
-							Scan
-						</Button>
+	return (
+		<div className="mb-16 ">
+			<div className="top-hero-section">
+				<div className="page-container mx-auto max-w-7xl px-1 sm:px-2 lg:px-4 xl:px-6 flex-grow pt-3 sm:pt-5 lg:pt-10 xl:pt-16 mt-2 lg:mt-10 xl:mt-14 ">
+					<div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 ">
+						<div className="inline-block max-w-[1750px] text-center justify-center">
+							<h1 className={title()}>
+								<div>DD.xyz Token Scanner &nbsp;</div>
+								<span> Your </span>
+								<span className={title({ color: "yellow" })}>Shield </span>
+								<span>Against Blockchain Risks. &nbsp;</span>
+							</h1>
+						</div>
+
+						<div className="">
+							<div className={subtitle({ class: "mt-6" })}>Paste any token or wallet address to uncover hidden risks with DD.xyz&apos;s powerful API.</div>
+						</div>
+						<div className="flex flex-wrap md:flex-nowrap items-center gap-2 max-w-[800px] w-full ">
+							<Input
+								onChange={(e) => setContractAddress(e.target.value)}
+								defaultValue={searchParams.get("contractAddress") || ""}
+								className="w-full"
+								label="Enter Contract Address"
+								type="text"
+								variant="faded"
+								fullWidth
+								size="lg"
+							/>
+							<Button isLoading={loading} onPress={() => getThread(contractAddress)} type="button" color="warning" size="lg" className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto">
+								Scan
+							</Button>
+						</div>
+						<div className="page-container ">
+							<Button onPress={() => setHistoryModal(true)}>Show History Scan</Button>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div className="page-container !mt-[150px] top-hero-section">
-				<User
-					className="mb-5"
-					avatarProps={{
-						src: result?.details?.token_risk?.token_logo || (typeof tokenData == "object" && (tokenData?.image?.small || tokenData?.image?.thumb)),
-						className: "border",
-					}}
-					description={result?.details?.token_risk?.token_name || result?.details?.token_info?.tokenName || (typeof tokenData === "object" && tokenData?.name)}
-					name={result?.details?.token_risk?.token_symbol || result?.details?.token_info?.symbol || (typeof tokenData === "object" && tokenData?.symbol)}
-				/>
-				<div className="grid grid-cols-12 gap-3 lg:gap-10 ">
-					<div className="col-span-12 lg:col-span-5">
-						<div className="thread-card">
-							<span className="shadow-bg" style={{ boxShadow: `0px 0px 350px 120px ${interpolateColor(parseInt(result?.overallRisk, 10), 0.8)}` }}></span>
-							<h2 className={`text-3xl font-bold `} style={{ color: interpolateColor(parseInt(result?.overallRisk, 10), 1) }}>
-								{findTopic()?.name}
-								<br /> ({result?.issues?.[0]?.tags?.length} {result?.issues?.length > 1 ? "issues" : "issue"})
-							</h2>
-						</div>
-						<div className="mt-4 ">
-							<p className="">{result?.details?.token_info?.description}</p>
-							<div className="mt-4 grid grid-cols-2 gap-3">
-								{result?.details?.token_info?.github && (
-									<Link className="flex gap-2" isExternal href={result?.details?.token_info?.github}>
-										<BsGithub size={20} />
-										GitHub
-									</Link>
-								)}
-								{result?.details?.token_info?.linkedin && (
-									<Link className="flex gap-2" isExternal href={result?.details?.token_info?.linkedin}>
-										<BsLinkedin size={20} />
-										Linkedin
-									</Link>
-								)}
-								{result?.details?.token_info?.email && (
-									<Link className="flex gap-2" isExternal href={result?.details?.token_info?.email}>
-										<BsEnvelopeFill size={20} />
-										Email
-									</Link>
-								)}
-								{result?.details?.token_info?.website && (
-									<Link className="flex gap-2" isExternal href={result?.details?.token_info?.website}>
-										<BsLink size={24} />
-										Website
-									</Link>
-								)}
-								{result?.details?.token_info?.discord && (
-									<Link className="flex gap-2" isExternal href={result?.details?.token_info?.discord}>
-										<BsDiscord size={20} />
-										Discord
-									</Link>
-								)}
+
+			<div className="top-hero-section">
+				<div className="page-container !mt-[150px] ">
+					<User
+						className="mb-5"
+						avatarProps={{
+							src: result?.details?.token_risk?.token_logo || (typeof tokenData == "object" && (tokenData?.image?.small || tokenData?.image?.thumb)),
+							className: "border",
+						}}
+						description={result?.details?.token_risk?.token_name || result?.details?.token_info?.tokenName || (typeof tokenData === "object" && tokenData?.name)}
+						name={result?.details?.token_risk?.token_symbol || result?.details?.token_info?.symbol || (typeof tokenData === "object" && tokenData?.symbol)}
+					/>
+					<div className="grid grid-cols-12 gap-3 lg:gap-10 ">
+						<div className="col-span-12 lg:col-span-5">
+							<div className="thread-card ">
+								<span className="shadow-bg" style={{ boxShadow: `0px 0px 350px 120px ${interpolateColor(parseInt(result?.overallRisk, 10), 0.8)}` }}></span>
+								<h2 className={`text-3xl font-bold `} style={{ color: interpolateColor(parseInt(result?.overallRisk, 10), 1) }}>
+									{findTopic()?.name}
+									<br /> ({result?.issues?.[0]?.tags?.length} {result?.issues?.length > 1 ? "issues" : "issue"})
+								</h2>
+							</div>
+							<div className="mt-4 ">
+								<p className="">{result?.details?.token_info?.description}</p>
+								<div className="mt-4 grid grid-cols-2 gap-3">
+									{result?.details?.token_info?.github && (
+										<Link className="flex gap-2" isExternal href={result?.details?.token_info?.github}>
+											<BsGithub size={20} />
+											GitHub
+										</Link>
+									)}
+									{result?.details?.token_info?.linkedin && (
+										<Link className="flex gap-2" isExternal href={result?.details?.token_info?.linkedin}>
+											<BsLinkedin size={20} />
+											Linkedin
+										</Link>
+									)}
+									{result?.details?.token_info?.email && (
+										<Link className="flex gap-2" isExternal href={result?.details?.token_info?.email}>
+											<BsEnvelopeFill size={20} />
+											Email
+										</Link>
+									)}
+									{result?.details?.token_info?.website && (
+										<Link className="flex gap-2" isExternal href={result?.details?.token_info?.website}>
+											<BsLink size={24} />
+											Website
+										</Link>
+									)}
+									{result?.details?.token_info?.discord && (
+										<Link className="flex gap-2" isExternal href={result?.details?.token_info?.discord}>
+											<BsDiscord size={20} />
+											Discord
+										</Link>
+									)}
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<div className="col-span-12 lg:col-span-7">
-						<h3 className={`text-2xl font-semibold`} style={{ color: interpolateColor(parseInt(result?.overallRisk, 10), 1) }}>
-							{result?.issues?.[0]?.riskScore}
-						</h3>
+						<div className="col-span-12 lg:col-span-7">
+							<h3 className={`text-2xl font-semibold`} style={{ color: interpolateColor(parseInt(result?.overallRisk, 10), 1) }}>
+								{result?.issues?.[0]?.riskScore}
+							</h3>
 
-						<div className="mt-5">
-							<SliderComponent value={result?.overallRisk || 0} />
-						</div>
+							<div className="mt-5">
+								<SliderComponent value={result?.overallRisk || 0} />
+							</div>
 
-						<div className="mb-1 mt-12">
-							{result?.issues?.[0]?.tags?.map((t: { name: string; description: string; type: string; severity: number; key: string }, i: number) => (
-								<div className="mt-4" key={i}>
-									<h4 className="font-semibold text-lg">{t?.name}</h4>
-									<p>{t.description}</p>
-									{result?.issues?.[0]?.tags?.length !== i + 1 && <Divider className="mt-2" />}
-								</div>
-							))}
-						</div>
+							<div className="mb-1 mt-12">
+								{result?.issues?.[0]?.tags?.map((t: { name: string; description: string; type: string; severity: number; key: string }, i: number) => (
+									<div className="mt-4" key={i}>
+										<h4 className="font-semibold text-lg">{t?.name}</h4>
+										<p>{t.description}</p>
+										{result?.issues?.[0]?.tags?.length !== i + 1 && <Divider className="mt-2" />}
+									</div>
+								))}
+							</div>
 
-						{/* <Slider
+							{/* <Slider
 							classNames={{
 								base: "max-w-md gap-3",
 								filler: "bg-gradient-to-r from-green-300 to-danger-300 dark:from-danger-900 dark:to-danger-200",
@@ -172,79 +180,106 @@ const ResultLanding = () => {
 							)}
 							size="md"
 						/> */}
+						</div>
 					</div>
-				</div>
 
-				<div className="grid grid-cols-12 gap-3 lg:gap-10 mt-7">
-					<div className="col-span-12 lg:col-span-6">
-						<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Token Info</h4>
-						{tokenData === null ? (
-							<></>
-						) : tokenData === "loading" ? (
-							"loading..."
-						) : (
-							<div>
-								<ul style={{ listStyleType: "revert" }} className="token-info-list">
-									<li>
-										<div className="flex items-center gap-2">
-											<img alt="icon" src={tokenData?.image?.thumb || tokenData?.image?.small} className="" />
-											<span>
-												{tokenData?.name} ({tokenData?.symbol?.toUpperCase()})
-											</span>
-										</div>
-										<p>{tokenData?.contract_address}</p>
-									</li>
+					<div className="grid grid-cols-12 gap-3 lg:gap-10 mt-7">
+						<div className="col-span-12 lg:col-span-6">
+							<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Token Info</h4>
+							{tokenData === null ? (
+								<></>
+							) : tokenData === "loading" ? (
+								"loading..."
+							) : (
+								<div>
+									<ul style={{ listStyleType: "revert" }} className="token-info-list">
+										<li>
+											<div className="flex items-center gap-2">
+												<img alt="icon" src={tokenData?.image?.thumb || tokenData?.image?.small} className="" />
+												<span>
+													{tokenData?.name} ({tokenData?.symbol?.toUpperCase()})
+												</span>
+											</div>
+											<p>{tokenData?.contract_address}</p>
+										</li>
 
-									<li>
-										<div>Price:</div>
-										<div>
-											{formatNumber(tokenData?.market_data?.current_price.usd, 4)}
-											<span className={tokenData?.market_data?.price_change_percentage_24h > 0 ? "text-success" : "text-danger"}> ({tokenData?.market_data?.price_change_percentage_24h})</span>
-										</div>
-									</li>
+										<li>
+											<div>Price:</div>
+											<div>
+												{formatNumber(tokenData?.market_data?.current_price.usd, 4)}
+												<span className={tokenData?.market_data?.price_change_percentage_24h > 0 ? "text-success" : "text-danger"}> ({tokenData?.market_data?.price_change_percentage_24h})</span>
+											</div>
+										</li>
 
-									<li>
-										<div>Market Cap:</div>
-										<div>
-											${formatNumber(tokenData?.market_data?.market_cap.usd / 1e6, 2)}M (#{tokenData?.market_data?.market_cap_rank}){" "}
-										</div>
-									</li>
+										<li>
+											<div>Market Cap:</div>
+											<div>
+												${formatNumber(tokenData?.market_data?.market_cap.usd / 1e6, 2)}M (#{tokenData?.market_data?.market_cap_rank}){" "}
+											</div>
+										</li>
 
-									<li>
-										<div>4h Volume:</div>
-										<div>${formatNumber(tokenData?.market_data.total_volume.usd / 1e6, 2)}M</div>
-									</li>
+										<li>
+											<div>4h Volume:</div>
+											<div>${formatNumber(tokenData?.market_data?.total_volume.usd / 1e6, 2)}M</div>
+										</li>
 
-									<li>
-										<div>ATH:</div>
-										<div>
-											${formatNumber(tokenData.market_data.ath.usd, 2)}M ({new Date(tokenData.market_data.ath_date.usd).toLocaleDateString()})
-										</div>
-									</li>
-									<li>
-										<div>ATL:</div>
-										<div>
-											${formatNumber(tokenData.market_data.atl.usd, 2)}M ({new Date(tokenData.market_data.atl_date.usd).toLocaleDateString()})
-										</div>
-									</li>
+										<li>
+											<div>ATH:</div>
+											<div>
+												${formatNumber(tokenData?.market_data?.ath?.usd, 2)}M ({new Date(tokenData?.market_data?.ath_date?.usd).toLocaleDateString()})
+											</div>
+										</li>
+										<li>
+											<div>ATL:</div>
+											<div>
+												${formatNumber(tokenData?.market_data?.atl?.usd, 2)}M ({new Date(tokenData?.market_data?.atl_date?.usd).toLocaleDateString()})
+											</div>
+										</li>
 
-									<li>
-										<div>Sentiment:</div>
-										<div>{formatNumber(tokenData.sentiment_votes_up_percentage, 2)} % Positive</div>
-									</li>
-								</ul>
+										<li>
+											<div>Sentiment:</div>
+											<div>{formatNumber(tokenData?.sentiment_votes_up_percentage, 2)} % Positive</div>
+										</li>
+									</ul>
+								</div>
+							)}
+						</div>
+
+						<div className="col-span-12 lg:col-span-6">
+							<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Bubble Map</h4>
+							<div className="thread-card" style={{ width: "100%", padding: 0 }}>
+								{bubble && bubble !== null && <img alt="bubble map" src={bubble} style={{ width: "100%", borderRadius: 16 }} />}
 							</div>
-						)}
-					</div>
-
-					<div className="col-span-12 lg:col-span-6">
-						<h4 className="text-2xl font-medium mb-7 px-0 pt-5">bubble Map</h4>
-						<div className="thread-card" style={{ width: "100%", padding: 0 }}>
-							{bubble && bubble !== null && <img alt="bubble map" src={bubble} style={{ width: "100%", borderRadius: 16 }} />}
 						</div>
 					</div>
 				</div>
 			</div>
+
+			<Modal isOpen={historyModal} size={"3xl"} onClose={onCloseHistoryModal} backdrop="opaque">
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader className="flex flex-col gap-1">History Scan</ModalHeader>
+							<ModalBody>
+								{histories?.map((history: any, index: number) => (
+									<div key={index}>
+										<button  disabled={!history || typeof history !== "string"} className={`mb-2 ${history === contractAddress ? "text-gray-500" : ""} ${history === contractAddress ? "pointer-events-none" : ""} `} 
+										 style={{  textAlign: "left" }} onClick={() => changeContract(history)}>
+											<h3 className="tex-lg">{history}</h3>
+										</button>
+										<Divider className="mb-3 mb-1" />
+									</div>
+								))}
+							</ModalBody>
+							{/* <ModalFooter>
+								<Button color="danger" variant="solid" size="lg" onPress={onClose}>
+									Close
+								</Button>
+							</ModalFooter> */}
+						</>
+					)}
+				</ModalContent>
+			</Modal>
 		</div>
 	);
 };

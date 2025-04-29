@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .top-hero-section {
-    background: url("../asset/pattern2_1.svg") no-repeat 100% 100%;
+    background: url("../asset/pattern2_1.svg") no-repeat -100% bottom;
     background-size: cover;
 }
 

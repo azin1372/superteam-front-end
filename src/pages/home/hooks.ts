@@ -16,6 +16,13 @@ export const useResult = () => {
     const [bubble, setBubble] = useState<string | null>("") // string is in loading, null : has no screenshot!
     const [tokenData, setTokenData] = useState<{ [key: string]: any } | null | "loading">("loading"); // obj is in loading, null : has no data!
 
+    const [histories, setHistories] = useState([])
+
+    const [historyModal, setHistoryModal] = useState(false);
+    const onCloseHistoryModal = () => {
+        setHistoryModal(false);
+    }
+
     const getThread = async (addr: string) => {
         try {
             if (!addr || addr.length <= 10) {
@@ -26,11 +33,15 @@ export const useResult = () => {
                 });
             }
             setLoading(true);
+
+            //* reset 
+            setResult({});
             addToQuery("contractAddress", addr);
             const { data } = await Api.get(`/threat/considerations/${addr}`);
 
             getBubbleMap("B7xavrAozTa1msQxu8YAcvPftf76x1fJYyLrYdTnbrah");
             getData(addr);
+            addToHistory(addr);
 
             setResult(data?.data || {});
         } catch (e) {
@@ -42,6 +53,7 @@ export const useResult = () => {
 
     const getBubbleMap = async (addr: string) => {
         try {
+            setBubble("");
             const { data } = await Api.get(`/bubble-map/${addr}`);
 
             if (data?.data) setBubble(data?.data);
@@ -56,6 +68,7 @@ export const useResult = () => {
 
     const getData = async (addr: string) => {
         try {
+            setTokenData("loading");
             const { data } = await Api.get(`/token-info/${addr}`);
             if (data?.data) setTokenData(data?.data);
             else setTokenData(null)
@@ -93,6 +106,32 @@ export const useResult = () => {
         return highestSeverityTag;
     }
 
+    const addToHistory = (contract_address: string) => {
+        const history = JSON.parse(localStorage.getItem("history") || "[]");
+
+        const is_already_exists = history.find((h: any) => h === contract_address);
+        if (is_already_exists) return;
+        history.unshift(contract_address);
+        localStorage.setItem("history", JSON.stringify(history));
+    }
+
+    const getHistories = () => {
+        const history = JSON.parse(localStorage.getItem("history") || "[]");
+        setHistories(history);
+    }
+
+
+    const changeContract = (addr: string) => {
+
+        const current_addr = searchParams.get("contractAddress");
+        if (current_addr === addr) return;
+
+        addToQuery("contractAddress", addr);
+        setContractAddress(addr);
+        getThread(addr);
+        setHistoryModal(false);
+    }
+
     useEffect(() => {
         const contract_address_param = searchParams.get("contractAddress");
 
@@ -102,6 +141,7 @@ export const useResult = () => {
         }
         else if (!contract_address_param) searchParams.delete("contractAddress");
 
+        getHistories();
     }, [])
 
 
@@ -114,7 +154,12 @@ export const useResult = () => {
         result,
         findTopic,
         bubble,
-        tokenData
+        tokenData,
+        historyModal,
+        setHistoryModal,
+        onCloseHistoryModal,
+        histories,
+        changeContract
     }
 
 

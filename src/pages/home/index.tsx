@@ -7,6 +7,7 @@ export default function IndexPage() {
 		<DefaultLayout>
 			<section className="">
 				{/* <img alt="pattern"    /> */}
+				
 				<ResultLanding />
 
 				{/* <div className="flex gap-3">
