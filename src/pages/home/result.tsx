@@ -7,19 +7,29 @@ import SliderComponent from "../../components/slider";
 import { GithubIcon } from "@/components/icons";
 import { BsDiscord, BsEnvelope, BsEnvelopeFill, BsGithub, BsLink, BsLinkedin } from "react-icons/bs";
 
+const formatNumber = (value: string | number, decimals = 2) => {
+	const numValue = typeof value === "string" ? parseFloat(value) : value;
+
+	if (isNaN(numValue)) {
+		return String(value);
+	}
+
+	const fixedNum = numValue.toFixed(decimals);
+
+	const [integerPart, decimalPart] = fixedNum.split(".");
+
+	const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+	return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+};
+
 const ResultLanding = () => {
 	const [searchParams] = useSearchParams();
-	const { getData, loading, contractAddress, setContractAddress, result, findTopic } = useResult();
+	const { getThread, loading, contractAddress, setContractAddress, result, findTopic, bubble, tokenData } = useResult();
 
-	const highestSeverityTag = (result?.issues?.[0]?.tags || []).reduce(
-		(max: any, current: any) => {
-			return current.severity > max.severity ? current : max;
-		},
-		(result?.issues?.[0]?.tags || [])?.[0]
-	);
-
+	console.log({ tokenData });
 	return (
-		<>
+		<div className="mb-16">
 			<div className="page-container mx-auto max-w-7xl px-1 sm:px-2 lg:px-4 xl:px-6 flex-grow pt-3 sm:pt-5 lg:pt-10 xl:pt-16 mt-2 lg:mt-10 xl:mt-14 top-hero-section">
 				<div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 ">
 					<div className="inline-block max-w-[1750px] text-center justify-center">
@@ -45,7 +55,7 @@ const ResultLanding = () => {
 							fullWidth
 							size="lg"
 						/>
-						<Button isLoading={loading} onPress={() => getData(contractAddress)} type="button" color="warning" size="lg" className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto">
+						<Button isLoading={loading} onPress={() => getThread(contractAddress)} type="button" color="warning" size="lg" className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto">
 							Scan
 						</Button>
 					</div>
@@ -55,11 +65,11 @@ const ResultLanding = () => {
 				<User
 					className="mb-5"
 					avatarProps={{
-						src: result?.details?.token_risk?.token_logo,
+						src: result?.details?.token_risk?.token_logo || (typeof tokenData == "object" && (tokenData?.image?.small || tokenData?.image?.thumb)),
 						className: "border",
 					}}
-					description={result?.details?.token_risk?.token_name || result?.details?.token_info?.tokenName}
-					name={result?.details?.token_risk?.token_symbol || result?.details?.token_info?.symbol}
+					description={result?.details?.token_risk?.token_name || result?.details?.token_info?.tokenName || (typeof tokenData === "object" && tokenData?.name)}
+					name={result?.details?.token_risk?.token_symbol || result?.details?.token_info?.symbol || (typeof tokenData === "object" && tokenData?.symbol)}
 				/>
 				<div className="grid grid-cols-12 gap-3 lg:gap-10 ">
 					<div className="col-span-12 lg:col-span-5">
@@ -116,7 +126,7 @@ const ResultLanding = () => {
 							<SliderComponent value={result?.overallRisk || 0} />
 						</div>
 
-						<div className="mb-16 mt-12">
+						<div className="mb-1 mt-12">
 							{result?.issues?.[0]?.tags?.map((t: { name: string; description: string; type: string; severity: number; key: string }, i: number) => (
 								<div className="mt-4" key={i}>
 									<h4 className="font-semibold text-lg">{t?.name}</h4>
@@ -164,8 +174,78 @@ const ResultLanding = () => {
 						/> */}
 					</div>
 				</div>
+
+				<div className="grid grid-cols-12 gap-3 lg:gap-10 mt-7">
+					<div className="col-span-12 lg:col-span-6">
+						<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Token Info</h4>
+						{tokenData === null ? (
+							<></>
+						) : tokenData === "loading" ? (
+							"loading..."
+						) : (
+							<div>
+								<ul style={{ listStyleType: "revert" }} className="token-info-list">
+									<li>
+										<div className="flex items-center gap-2">
+											<img alt="icon" src={tokenData?.image?.thumb || tokenData?.image?.small} className="" />
+											<span>
+												{tokenData?.name} ({tokenData?.symbol?.toUpperCase()})
+											</span>
+										</div>
+										<p>{tokenData?.contract_address}</p>
+									</li>
+
+									<li>
+										<div>Price:</div>
+										<div>
+											{formatNumber(tokenData?.market_data?.current_price.usd, 4)}
+											<span className={tokenData?.market_data?.price_change_percentage_24h > 0 ? "text-success" : "text-danger"}> ({tokenData?.market_data?.price_change_percentage_24h})</span>
+										</div>
+									</li>
+
+									<li>
+										<div>Market Cap:</div>
+										<div>
+											${formatNumber(tokenData?.market_data?.market_cap.usd / 1e6, 2)}M (#{tokenData?.market_data?.market_cap_rank}){" "}
+										</div>
+									</li>
+
+									<li>
+										<div>4h Volume:</div>
+										<div>${formatNumber(tokenData?.market_data.total_volume.usd / 1e6, 2)}M</div>
+									</li>
+
+									<li>
+										<div>ATH:</div>
+										<div>
+											${formatNumber(tokenData.market_data.ath.usd, 2)}M ({new Date(tokenData.market_data.ath_date.usd).toLocaleDateString()})
+										</div>
+									</li>
+									<li>
+										<div>ATL:</div>
+										<div>
+											${formatNumber(tokenData.market_data.atl.usd, 2)}M ({new Date(tokenData.market_data.atl_date.usd).toLocaleDateString()})
+										</div>
+									</li>
+
+									<li>
+										<div>Sentiment:</div>
+										<div>{formatNumber(tokenData.sentiment_votes_up_percentage, 2)} % Positive</div>
+									</li>
+								</ul>
+							</div>
+						)}
+					</div>
+
+					<div className="col-span-12 lg:col-span-6">
+						<h4 className="text-2xl font-medium mb-7 px-0 pt-5">bubble Map</h4>
+						<div className="thread-card" style={{ width: "100%", padding: 0 }}>
+							{bubble && bubble !== null && <img alt="bubble map" src={bubble} style={{ width: "100%", borderRadius: 16 }} />}
+						</div>
+					</div>
+				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 

@@ -5,7 +5,6 @@
 .top-hero-section {
     background: url("../asset/pattern2_1.svg") no-repeat 100% 100%;
     background-size: cover;
-
 }
 
 .thread-card {
@@ -35,6 +34,21 @@
     margin: 0 auto;
     display: block;
     padding: 0 10px !important;
+}
+
+.token-info-list li {
+    margin-top: 10px;
+}
+
+.token-info-list li > :first-child {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.token-info-list li > :last-child {
+    opacity: 0.9;
+    font-weight: 400;
+    font-size: 0.9rem;
 }
 
 @media screen and (min-width: 640px) {

@@ -13,9 +13,10 @@ export const useResult = () => {
     const [contractAddress, setContractAddress] = useState("");
     const { addToQuery } = useUrl();
     const [result, setResult] = useState<{ [key: string]: any }>({});
+    const [bubble, setBubble] = useState<string | null>("") // string is in loading, null : has no screenshot!
+    const [tokenData, setTokenData] = useState<{ [key: string]: any } | null | "loading">("loading"); // obj is in loading, null : has no data!
 
-
-    const getData = async (addr: string) => {
+    const getThread = async (addr: string) => {
         try {
             if (!addr || addr.length <= 10) {
                 return addToast({
@@ -28,7 +29,9 @@ export const useResult = () => {
             addToQuery("contractAddress", addr);
             const { data } = await Api.get(`/threat/considerations/${addr}`);
 
-            console.log(data?.data);
+            getBubbleMap("B7xavrAozTa1msQxu8YAcvPftf76x1fJYyLrYdTnbrah");
+            getData(addr);
+
             setResult(data?.data || {});
         } catch (e) {
             console.log("e", e);
@@ -37,6 +40,29 @@ export const useResult = () => {
         }
     }
 
+    const getBubbleMap = async (addr: string) => {
+        try {
+            const { data } = await Api.get(`/bubble-map/${addr}`);
+
+            if (data?.data) setBubble(data?.data);
+            else setBubble(null)
+
+        } catch (e) {
+            console.log("E", e);
+        } finally {
+            //
+        }
+    }
+
+    const getData = async (addr: string) => {
+        try {
+            const { data } = await Api.get(`/token-info/${addr}`);
+            if (data?.data) setTokenData(data?.data);
+            else setTokenData(null)
+        } catch (e) {
+            console.log("e", e);
+        }
+    }
 
     const findTopic = () => {
 
@@ -71,7 +97,7 @@ export const useResult = () => {
         const contract_address_param = searchParams.get("contractAddress");
 
         if (contract_address_param && contract_address_param.length > 10) {
-            getData(contract_address_param);
+            getThread(contract_address_param);
             setContractAddress(contract_address_param);
         }
         else if (!contract_address_param) searchParams.delete("contractAddress");
@@ -82,11 +108,13 @@ export const useResult = () => {
 
     return {
         loading,
-        getData,
+        getThread,
         contractAddress,
         setContractAddress,
         result,
-        findTopic
+        findTopic,
+        bubble,
+        tokenData
     }
 
 
