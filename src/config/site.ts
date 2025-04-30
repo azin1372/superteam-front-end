@@ -27,7 +27,6 @@ export const siteConfig = {
   links: {
     github: "https://github.com/azin1372",
     twitter: "https://x.com/0xAzin",
-    docs: "https://heroui.com",
     discord: "https://discord.gg/azinat",
   },
 };

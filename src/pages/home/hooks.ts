@@ -42,7 +42,10 @@ export const useResult = () => {
 
         const todayCount = data.filter((item: any) => {
             if (!item?.date) return false;
+         
             const itemDate = new Date(Number(item.date));
+
+
             return itemDate >= today && itemDate < tomorrow;
         }).length;
 
@@ -59,8 +62,10 @@ export const useResult = () => {
 
 
             const todays_scan = countTodayScans();
+            const is_subscribed = localStorage.getItem("is_subscribed");
 
-            if (todays_scan && todays_scan > 10) {
+            console.log({todays_scan})
+            if (todays_scan && todays_scan > 10 && !is_subscribed) {
                 return addToast({
                     color: "danger",
                     title: "Maximum scan limit reached",

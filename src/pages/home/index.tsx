@@ -44,7 +44,10 @@ export default function IndexPage() {
 
 	useEffect(() => {
 		if ((!userContext.isLoading && !userContext.user) || !publicKey) setIsSubscribed(false);
-		else setIsSubscribed(true);
+		else {
+			setIsSubscribed(true);
+			localStorage.setItem("is_subscribed", "yes");
+		}
 	}, [publicKey, userContext.isLoading, userContext.user]);
 
 	return (
@@ -81,7 +84,7 @@ export default function IndexPage() {
 			{/* ---------------------------------------------- history modal  ---------------------------------------------- */}
 			<Modal isOpen={historyModal} size={"3xl"} onClose={onCloseHistoryModal} backdrop="opaque">
 				<ModalContent>
-					{(onClose) => (
+					{() => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">History Scan</ModalHeader>
 							<ModalBody>

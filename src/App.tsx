@@ -11,7 +11,7 @@ import { useMemo } from "react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { clusterApiUrl } from "@solana/web3.js";
 
-export const AfterLogin = async (userContext: any) => {
+export const AfterLogin = async () => {
 	try {
 		// if (userContext.user && !userHasWallet(userContext)) {
 		// 	console.log("create a wallet ::::::")
@@ -58,7 +58,7 @@ function App() {
 							onSignIn={() => {
 								setTimeout(() => {
 									console.log(" ---------------------------------- LOG -----------------------------------");
-									AfterLogin(userContext);
+									AfterLogin();
 								}, 15000);
 							}}
 							clientId="fd0959e0-b02a-4edd-9b32-40ff70112f6f"
