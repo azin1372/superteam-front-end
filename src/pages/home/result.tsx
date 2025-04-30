@@ -27,7 +27,6 @@ const ResultLanding = () => {
 	const { getThread, loading, contractAddress, setContractAddress, result, findTopic, bubble, tokenData, historyModal, onCloseHistoryModal, setHistoryModal, histories, changeContract } = useResult();
 	const { addToQuery } = useUrl();
 
-	console.log({ tokenData });
 
 	return (
 		<div className="mb-16 ">
