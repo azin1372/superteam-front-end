@@ -14,7 +14,7 @@ import { UserButton } from "@civic/auth/react";
 import { FC, useState } from "react";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 
-export const Navbar: FC<{ setHistoryModal: any }> = ({ setHistoryModal }) => {
+export const Navbar: FC<{ setHistoryModal: any; isSubscribed?: boolean }> = ({ setHistoryModal, isSubscribed }) => {
 	const searchInput = (
 		<Input
 			aria-label="Search"
@@ -68,7 +68,7 @@ export const Navbar: FC<{ setHistoryModal: any }> = ({ setHistoryModal }) => {
 						</Link>
 						<ThemeSwitch />
 					</NavbarItem>
-					<NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+					<NavbarItem className="hidden lg:flex">{!isSubscribed ? <Button color="default">Free Plan</Button> : <Button color="secondary">Subscribed!</Button>}</NavbarItem>
 					<NavbarItem className="hidden md:flex">
 						{/* <UserButton className="text-sm font-normal flex items-center justify-center !bg-transparent text-default-600 dark:text-white !text-[#FFB457] rounded-lg py-3 h-[38px] border-hidden" style={{ borderRadius : 12 ,  border : '1px solid rgba(255, 180, 87 , 0.5)' }}  /> */}
 						<Button onPress={() => setHistoryModal(true)}>History Scan</Button>

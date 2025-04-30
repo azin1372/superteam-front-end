@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from 
 export default function SubscriptionPage() {
 	return (
 		<DefaultLayout>
-			<div className="page-container ">
+			<div className="page-container !mt-16">
 				<h1 className={title()}>Subscription Levels</h1>
 				<h2 className="text-xl font-semibold mt-16">Unlock the Power of Scanning!</h2>
 				<div className="leading-7">

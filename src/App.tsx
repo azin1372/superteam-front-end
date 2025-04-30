@@ -50,7 +50,7 @@ function App() {
 	);
 	console.log({ endpoint });
 	return (
-		<div className="pattern">
+		<div className="pattern" id="auth-civic-main">
 			<ConnectionProvider endpoint={endpoint}>
 				<WalletProvider wallets={wallets} autoConnect>
 					<WalletModalProvider>

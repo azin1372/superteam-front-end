@@ -21,15 +21,54 @@ export const useResult = () => {
 
         const history = JSON.parse(localStorage.getItem("history") || "[]");
 
-        const is_already_exists = history.find((h: any) => h === contract_address);
+        const is_already_exists = history.find((h: { [key: string]: any }) => h?.contract_address === contract_address);
         if (is_already_exists) return;
-        history.unshift(contract_address);
+        history.unshift({ contract_address, date: Date.now().toString() });
         localStorage.setItem("history", JSON.stringify(history));
+    }
+
+
+
+    const countTodayScans = () => {
+
+        let data = JSON.parse(localStorage.getItem("history") || "[]");
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+
+
+        const todayCount = data.filter((item: any) => {
+            if (!item?.date) return false;
+            const itemDate = new Date(Number(item.date));
+            return itemDate >= today && itemDate < tomorrow;
+        }).length;
+
+        if (todayCount > 10) {
+            console.log(`Warning: ${todayCount} scans recorded today, exceeding the limit of 10!`);
+        }
+
+        return todayCount;
     }
 
 
     const getThread = async (addr: string) => {
         try {
+
+
+            const todays_scan = countTodayScans();
+
+            if (todays_scan && todays_scan > 10) {
+                return addToast({
+                    color: "danger",
+                    title: "Maximum scan limit reached",
+                    description: "You have scanned more than 10 contracts today, subscribe you account or try again tomorrow",
+                });
+            }
+
+
             if (!addr || addr.length <= 10) {
                 return addToast({
                     color: "danger",
@@ -115,7 +154,6 @@ export const useResult = () => {
 
 
 
-
     useEffect(() => {
         const contract_address_param = searchParams.get("contractAddress");
 
@@ -125,7 +163,7 @@ export const useResult = () => {
         }
         else if (!contract_address_param) searchParams.delete("contractAddress");
 
-    }, [])
+    }, [searchParams])
 
 
 

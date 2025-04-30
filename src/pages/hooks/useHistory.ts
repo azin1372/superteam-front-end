@@ -11,14 +11,14 @@ export const useHistory = () => {
 
 
     const [historyModal, setHistoryModal] = useState(false);
-    const [histories, setHistories] = useState([]);
+    const [histories, setHistories] = useState<{[key: string]: any}[]>([]);
 
     const addToHistory = (contract_address: string) => {
         const history = JSON.parse(localStorage.getItem("history") || "[]");
 
-        const is_already_exists = history.find((h: any) => h === contract_address);
+        const is_already_exists = history.find((h: { [key: string]: any }) => h?.contract_address === contract_address);
         if (is_already_exists) return;
-        history.unshift(contract_address);
+        history.unshift({ contract_address, date: Date.now().toString() });
         localStorage.setItem("history", JSON.stringify(history));
     }
 

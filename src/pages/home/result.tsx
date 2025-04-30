@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import SliderComponent from "../../components/slider";
 import { BsDiscord, BsEnvelope, BsEnvelopeFill, BsGithub, BsLink, BsLinkedin } from "react-icons/bs";
 import { useUrl } from "@/hooks/useUrl";
+import { FC, ReactNode } from "react";
 
 const formatNumber = (value: string | number, decimals = 2) => {
 	const numValue = typeof value === "string" ? parseFloat(value) : value;
@@ -22,11 +23,10 @@ const formatNumber = (value: string | number, decimals = 2) => {
 	return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
 };
 
-const ResultLanding = () => {
+const ResultLanding: FC<{ heroSlot?: ReactNode }> = ({ heroSlot }) => {
 	const [searchParams] = useSearchParams();
 	const { getThread, loading, contractAddress, setContractAddress, result, findTopic, bubble, tokenData } = useResult();
 	const { addToQuery } = useUrl();
-
 
 	return (
 		<div className="mb-16 ">
@@ -56,11 +56,18 @@ const ResultLanding = () => {
 								fullWidth
 								size="lg"
 							/>
-							<Button isLoading={loading} onPress={() => getThread(contractAddress)} type="button" color="warning" size="lg" className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto font-medium text-lg">
+							<Button
+								isLoading={loading}
+								onPress={() => getThread(contractAddress)}
+								type="button"
+								color="warning"
+								size="lg"
+								className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto font-medium text-lg"
+							>
 								Scan
 							</Button>
 						</div>
-
+						{heroSlot}
 					</div>
 				</div>
 			</div>
@@ -251,8 +258,6 @@ const ResultLanding = () => {
 					</div>
 				</div>
 			</div>
-
-	
 		</div>
 	);
 };
