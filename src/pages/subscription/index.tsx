@@ -14,7 +14,7 @@ export default function SubscriptionPage() {
 						<span>Free Users:</span> Run up to <span>10 scans daily</span> for free.
 					</p>
 					<p>
-						<span>Wallet-Connected Users:</span> Connect your wallet to unlock <span>100 scans</span> per connection.
+						<span>Wallet-Connected Users:</span> Connect your wallet to unlock <span>infinite scans.</span>
 					</p>
 					<h3 className="text-xl font-semibold mt-6">Why Connect Your Wallet?</h3>
 					<ul style={{ listStyleType: "revert" }} className="pl-4">

@@ -51,6 +51,12 @@
     font-size: 0.9rem;
 }
 
+.wallet-adapter-button,
+.sign-in-button * {
+    color: var(--heroui-default-500) !important;
+    font-weight: 500 !important;
+}
+
 @media screen and (min-width: 640px) {
     /* sm */
     .page-container {

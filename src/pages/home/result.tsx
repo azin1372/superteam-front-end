@@ -24,7 +24,7 @@ const formatNumber = (value: string | number, decimals = 2) => {
 
 const ResultLanding = () => {
 	const [searchParams] = useSearchParams();
-	const { getThread, loading, contractAddress, setContractAddress, result, findTopic, bubble, tokenData, historyModal, onCloseHistoryModal, setHistoryModal, histories, changeContract } = useResult();
+	const { getThread, loading, contractAddress, setContractAddress, result, findTopic, bubble, tokenData } = useResult();
 	const { addToQuery } = useUrl();
 
 
@@ -56,13 +56,11 @@ const ResultLanding = () => {
 								fullWidth
 								size="lg"
 							/>
-							<Button isLoading={loading} onPress={() => getThread(contractAddress)} type="button" color="warning" size="lg" className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto">
+							<Button isLoading={loading} onPress={() => getThread(contractAddress)} type="button" color="warning" size="lg" className="md:py-[32px] min-w-[130px] w-full sm:w-auto md:w-auto font-medium text-lg">
 								Scan
 							</Button>
 						</div>
-						<div className="page-container ">
-							<Button onPress={() => setHistoryModal(true)}>Show History Scan</Button>
-						</div>
+
 					</div>
 				</div>
 			</div>
@@ -254,31 +252,7 @@ const ResultLanding = () => {
 				</div>
 			</div>
 
-			<Modal isOpen={historyModal} size={"3xl"} onClose={onCloseHistoryModal} backdrop="opaque">
-				<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader className="flex flex-col gap-1">History Scan</ModalHeader>
-							<ModalBody>
-								{histories?.map((history: any, index: number) => (
-									<div key={index}>
-										<button  disabled={!history || typeof history !== "string"} className={`mb-2 ${history === contractAddress ? "text-gray-500" : ""} ${history === contractAddress ? "pointer-events-none" : ""} `} 
-										 style={{  textAlign: "left" }} onClick={() => changeContract(history)}>
-											<h3 className="tex-lg">{history}</h3>
-										</button>
-										<Divider className="mb-3 mb-1" />
-									</div>
-								))}
-							</ModalBody>
-							{/* <ModalFooter>
-								<Button color="danger" variant="solid" size="lg" onPress={onClose}>
-									Close
-								</Button>
-							</ModalFooter> */}
-						</>
-					)}
-				</ModalContent>
-			</Modal>
+	
 		</div>
 	);
 };
