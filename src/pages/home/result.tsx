@@ -50,7 +50,7 @@ const ResultLanding = () => {
 								onChange={(e) => setContractAddress(e.target.value)}
 								defaultValue={searchParams.get("contractAddress") || ""}
 								className="w-full"
-								label="Enter Contract Address"
+								label="Contract Address"
 								type="text"
 								variant="faded"
 								fullWidth

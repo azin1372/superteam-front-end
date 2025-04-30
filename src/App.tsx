@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import IndexPage from "@/pages/home/index";
-import DocsPage from "@/pages/docs";
+import SubscriptionPage from "@/pages/subscription";
 import { CivicAuthProvider } from "@civic/auth-web3/react";
 import { ConnectionProvider, WalletProvider, useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { WalletDisconnectButton, WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -65,7 +65,7 @@ function App() {
 						>
 							<Routes>
 								<Route element={<IndexPage />} path="/" />
-								<Route element={<DocsPage />} path="/docs" />
+								<Route element={<SubscriptionPage />} path="/subscription" />
 							</Routes>
 						</CivicAuthProvider>
 					</WalletModalProvider>

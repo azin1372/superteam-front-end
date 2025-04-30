@@ -9,8 +9,8 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Subscription",
+      href: "/subscription",
     },
   ],
   navMenuItems: [
@@ -19,8 +19,8 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Subscription Levels",
+      href: "/subscription",
     },
 
   ],

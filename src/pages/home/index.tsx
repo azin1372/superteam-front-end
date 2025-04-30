@@ -32,8 +32,7 @@ export default function IndexPage() {
 
 	const { balance, publicKey } = useBalance(userContext);
 
-
-	//   (userContext as any)?.solana?.wallet?.connect(); 
+	//   (userContext as any)?.solana?.wallet?.connect();
 	console.log("aniyyyyyyyyyyyyyyyy", {
 		sol: (userContext as any)?.solana,
 	});
@@ -42,11 +41,10 @@ export default function IndexPage() {
 		<DefaultLayout>
 			<section className="">
 				{userContext.user && <div className="">user is here</div>}
-				<UserButton />
+				{/* <UserButton className="btn" /> */}
 				{/* <img alt="pattern"    /> */}
 				<WalletMultiButton />
-				{!userContext.user && <button className="sign-in">Sign into My App</button>}
-				{userContext.user && <>Hello : {userContext.user.name}</>}x
+				{userContext.user && <>Hello : {userContext.user.name}</>}
 				{publicKey && (
 					<div>
 						<p>Wallet address: {publicKey.toString()}</p>
