@@ -10,6 +10,9 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { TwitterIcon, GithubIcon, DiscordIcon, HeartFilledIcon, SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
+import LOGO from "../../src/asset/logo.png"
+
+
 import { UserButton } from "@civic/auth/react";
 import { FC, useState } from "react";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
@@ -40,8 +43,7 @@ export const Navbar: FC<{ setHistoryModal: any; isSubscribed?: boolean }> = ({ s
 				<NavbarContent className="basis-1/5 sm:basis-full" justify="start">
 					<NavbarBrand className="gap-3 max-w-fit">
 						<Link className="flex justify-start items-center gap-1" color="foreground" href="/">
-							<Logo />
-							<p className="font-bold text-inherit">ACME</p>
+							<img src={LOGO} alt="logo" style={{ height : 80 }} />
 						</Link>
 					</NavbarBrand>
 					<div className="hidden lg:flex gap-4 justify-start ml-2">

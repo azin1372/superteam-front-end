@@ -83,6 +83,7 @@ const ResultLanding: FC<{ heroSlot?: ReactNode }> = ({ heroSlot }) => {
 						description={result?.details?.token_risk?.token_name || result?.details?.token_info?.tokenName || (typeof tokenData === "object" && tokenData?.name)}
 						name={result?.details?.token_risk?.token_symbol || result?.details?.token_info?.symbol || (typeof tokenData === "object" && tokenData?.symbol)}
 					/>
+
 					<div className="grid grid-cols-12 gap-3 lg:gap-10 ">
 						<div className="col-span-12 lg:col-span-5">
 							<div className="thread-card ">
@@ -189,13 +190,13 @@ const ResultLanding: FC<{ heroSlot?: ReactNode }> = ({ heroSlot }) => {
 
 					<div className="grid grid-cols-12 gap-3 lg:gap-10 mt-7">
 						<div className="col-span-12 lg:col-span-6">
-							<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Token Info</h4>
 							{tokenData === null ? (
 								<></>
 							) : tokenData === "loading" ? (
-								"loading..."
+								""
 							) : (
 								<div>
+									<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Token Info</h4>
 									<ul style={{ listStyleType: "revert" }} className="token-info-list">
 										<li>
 											<div className="flex items-center gap-2">
@@ -250,10 +251,14 @@ const ResultLanding: FC<{ heroSlot?: ReactNode }> = ({ heroSlot }) => {
 						</div>
 
 						<div className="col-span-12 lg:col-span-6">
-							<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Bubble Map</h4>
-							<div className="thread-card" style={{ width: "100%", padding: 0 }}>
-								{bubble && bubble !== null && <img alt="bubble map" src={bubble} style={{ width: "100%", borderRadius: 16 }} />}
-							</div>
+							{bubble && (
+								<>
+									<h4 className="text-2xl font-medium mb-7 px-0 pt-5">Bubble Map</h4>
+									<div className="thread-card" style={{ width: "100%", padding: 0 }}>
+										{bubble && bubble !== null && <img alt="bubble map" src={bubble} style={{ width: "100%", borderRadius: 16 }} />}
+									</div>
+								</>
+							)}
 						</div>
 					</div>
 				</div>
